@@ -11,6 +11,14 @@ class App extends React.Component {
     };
   }
 
+  showLoginBox() {
+    this.setState({isLoginOpen: true, isRegisterOpen: false});
+  }
+
+  showRegisterBox() {
+    this.setState({isRegisterOpen: true, isLoginOpen: false});
+  }
+
   render() {
     
     <div className="box-container">
@@ -20,8 +28,20 @@ class App extends React.Component {
 
     return (
       <div className="root-container">
-        <LoginBox></LoginBox>
-        <RegisterBox></RegisterBox>
+          <div className="box-controller">
+            <div className={"controller" + (this.state.isLoginOpen ? "selected-controller" : "")}
+            onClick={this.showLoginBox.bind(this)}>
+              Login
+            </div>
+            <div className={"controller" + (this.state.isRegisterOpen ? "selected-controller" : "")} 
+            onClick={this.showRegisterBox.bind(this)}>
+              Register
+            </div>
+          </div>
+          <div className="box-container">
+            {this.state.isLoginOpen && <LoginBox/>}
+            {this.state.isRegisterOpen && <RegisterBox/>}
+          </div>
       </div>
     );
   }
@@ -110,50 +130,12 @@ class RegisterBox extends React.Component {
             className="login-button"
             onClick={this
               .submitRegister
-              .bind(this)}>Login</button>
+              .bind(this)}>Register</button>
           </div>
         </div>
       </div>
     )
   }
-}
-
-showValidationErr(elm, msg) ;{
-  this.setState((prevState) => ({
-    errors: [
-      ...prevState.errors, {
-        elm,
-        msg
-      }
-    ]
-  }));
-}
-
-clearValidationErr(elm) ;{
-  this.setState((prevState) => {
-    let newArr = [];
-    for (let err of prevState.errors) {
-      if (elm != err.elm) {
-        newArr.push(err);
-      }
-    }
-    return {errors: newArr}
-  });
-}
-
-onUsernameChange(e) ;{
-  this.setState({username: e.target.value});
-  this.clearValidationErr("username");
-}
-
-onEmailChange(e) ;{
-  this.setState({email: e.target.value});
-  this.clearValidationErr("email");
-}
-
-onPasswordChange(e) ;{
-  this.setState({password: e.target.value});
-  this.clearValidationErr("password");
 }
 
 ReactDOM.render (
