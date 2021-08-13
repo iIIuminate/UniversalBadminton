@@ -93,12 +93,69 @@ class RegisterBox extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {username: "", email: "", password: "", errors: []};
   }
 
-  submitRegister(e) {}
+  showValidationErr(elm, msg) {
+    this.setState((prevState) => ({
+      errors: [
+        ...prevState.errors, {
+          elm,
+          msg
+        }
+      ]
+    }));
+  }
+
+  clearValidationErr(elm) {
+    this.setState((prevState) => {
+      let newArr = [];
+      for (let err of prevState.errors) {
+        if(elm != err.elm) {
+          newArr.push(err);
+        }
+      }
+      return {errors: newArr};
+    });
+  }
+
+  onUsernameChange(e) {
+    this.setState({username: e.target.value});
+    this.clearValidationErr("username");
+  }
+
+  onEmailChange(e) {
+    this.setState({email: e.target.value});
+    this.clearValidationErr("email");
+  }
+
+  onPasswordChange(e) {
+    this.setState({password: e.target.value});
+    this.clearValidationErr("password");
+  }
+
+  submitRegister(e) {
+    if(this.state.username == "") {
+      return this.showValidationErr("username", "Username Cannot be empty!");
+    } else if (this.state.email == "") {
+      return this.showValidationErr("email", "Email Cannot be empty!");
+    } else if (this.state.password =="") {
+      return this.showValidationErr("password", "Password Cannot be empty!");
+    }
+
+  }
 
   render() {
+    let usernameErr = null, passwordErr = null, emailErr = null;
+    for(let err of this.state.errors) {
+      if(err.elm == "username") {
+        usernameErr = err.msg;
+      } if (err.elm == "password") {
+        passwordErr = err.msg;
+      } if (err.elm == "email") {
+        emailErr = err.msg;
+      }
+    }
     return (
       <div className="inner-container">
         <div className="header">
@@ -106,25 +163,46 @@ class RegisterBox extends React.Component {
         </div>
         <div className="box">
           <div className="input-group">
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               name="username"
               className="login-input"
-              placeholder="Username"/>
+              placeholder="Username"
+              onChange={this.onUsernameChange.bind(this)}
+              />
+              <small className="danger-error">{usernameErr
+                  ? usernameErr
+                  : ""}
+              </small>
           </div>
           <div className="input-group">
+            <label htmlFor="email">Email</label>
             <input 
               type="text"
               name="email"
               className="login-input"
-              placeholder="Email"/>
+              placeholder="Email"
+              onChange={this.onEmailChange.bind(this)}
+              />
+              <small className="danger-error">{emailErr
+                  ? emailErr
+                  : ""}
+              </small>
           </div>
           <div className="input-group">
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               name="password"
               className="login-input"
-              placeholder="Password"/>
+              placeholder="Password"
+              onChange={this.onPasswordChange.bind(this)}
+              />
+              <small className="danger-error">{passwordErr
+                  ? passwordErr
+                  : ""}
+              </small>
           <button
             type="button"
             className="login-button"
@@ -137,6 +215,8 @@ class RegisterBox extends React.Component {
     )
   }
 }
+
+
 
 ReactDOM.render (
   <App />, document.getElementById("root"));
